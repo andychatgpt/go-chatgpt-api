@@ -40,7 +40,8 @@ func CreateConversation(c *gin.Context) {
 	}
 
 	if strings.HasPrefix(request.Model, gpt4Model) && request.ArkoseToken == "" {
-		arkoseToken, err := api.GetArkoseToken()
+		accessToken := api.GetAccessToken(c)
+		arkoseToken, err := api.GetChatArkoseToken(accessToken)
 		if err != nil || arkoseToken == "" {
 			c.AbortWithStatusJSON(http.StatusForbidden, api.ReturnMessage(err.Error()))
 			return

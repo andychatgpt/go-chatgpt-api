@@ -62,6 +62,15 @@ type LoginInfo struct {
 	Password string `json:"password"`
 }
 
+// backend-api/sentinel/chat-requirements 接口响应结构体
+type ChatRequirementsResponse struct {
+	Token  string `json:"token"`
+	Arkose struct {
+		Required bool   `json:"required"`
+		DX       string `json:"dx,omitempty"`
+	} `json:"arkose"`
+}
+
 type AuthLogin interface {
 	GetAuthorizedUrl(csrfToken string) (string, int, error)
 	GetState(authorizedUrl string) (string, int, error)
@@ -167,8 +176,51 @@ func GetAccessToken(c *gin.Context) string {
 	return accessToken
 }
 
-func GetArkoseToken() (string, error) {
-	return funcaptcha.GetOpenAIToken(PUID, ProxyUrl)
+// func GetArkoseToken() (string, error) {
+// 	return funcaptcha.GetOpenAIToken(PUID, ProxyUrl)
+// }
+
+func GetChatArkoseToken(accessToken string) (string, error) {
+	// 大部分情况下只有4的聊天才会走获取ArkoseToken逻辑
+	GPT_VERSION := 4
+	chatReqResp := getDx(accessToken)
+	dxVal := chatReqResp.Arkose.DX
+
+	return funcaptcha.GetOpenAIToken(GPT_VERSION, PUID, dxVal, ProxyUrl)
+}
+
+func getDx(access_token string) *ChatRequirementsResponse {
+	request, err := http.NewRequest(http.MethodPost, "https://chat.openai.com/backend-api/sentinel/chat-requirements", bytes.NewBuffer([]byte(`{"conversation_mode_kind":"primary_assistant"}`)))
+	if err != nil {
+		return nil
+	}
+	if PUID != "" {
+		request.Header.Set("Cookie", "_puid="+PUID+";")
+	}
+	// request.Header.Set("Oai-Language", Language)
+	// if api.OAIDID != "" {
+	// 	request.Header.Set("Cookie", request.Header.Get("Cookie")+"oai-did="+api.OAIDID)
+	// 	request.Header.Set("Oai-Device-Id", api.OAIDID)
+	// }
+	request.Header.Set("Content-Type", "application/json")
+	// request.Header.Set("User-Agent", api.UserAgent)
+	if access_token != "" {
+		request.Header.Set("Authorization", "Bearer "+access_token)
+	}
+	if err != nil {
+		return nil
+	}
+	response, err := Client.Do(request)
+	if err != nil {
+		return nil
+	}
+	defer response.Body.Close()
+	var chatRequireResponse ChatRequirementsResponse
+	err = json.NewDecoder(response.Body).Decode(&chatRequireResponse)
+	if err != nil {
+		return nil
+	}
+	return &chatRequireResponse
 }
 
 func setupPUID() {
