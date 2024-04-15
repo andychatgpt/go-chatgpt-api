@@ -1,4 +1,4 @@
-module github.com/linweiyuan/go-chatgpt-api
+module github.com/andychatgpt/go-chatgpt-api
 
 go 1.21
 
