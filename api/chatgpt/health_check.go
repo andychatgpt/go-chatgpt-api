@@ -49,7 +49,11 @@ func init() {
 
 func healthCheck() (resp *http.Response, err error) {
 	req, _ := http.NewRequest(http.MethodGet, healthCheckUrl, nil)
+	// 2024.04.16.在很多ip上，缺少下面中的Header的某一个字段会返回403，要求进行CloudFlare验证。
 	req.Header.Set("User-Agent", api.UserAgent)
+	req.Header.Add("sec-ch-ua-arch", "x86")
+	req.Header.Add("sec-ch-ua-bitness", "64")
+
 	resp, err = api.Client.Do(req)
 	return
 }

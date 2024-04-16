@@ -5,8 +5,8 @@
 - 下面提供了获取两种har文件的方式。你可以自己获取har文件并计算自己的arkoseToken。同时我们也提供api来让你调用获取两种arkoseToken,具体可以联系我们。
 - 本项目中获取到了har文件后，都要放在harPool这个文件夹下
 
-##### ChatGPT4聊天的har文件获取
-- 这个主要是给ChatGPT 4.0版本的聊天使用, 3.5版本的接口不需要。
+##### 聊天的har文件获取
+- 这个主要是给聊天使用，现在ChatGPT 3.5也需要Arkose Token了。
 - 获取过程参考[这里](https://github.com/gngpp/ninja/wiki/2-Arkose)
 
 ##### 登录接口har文件获取
