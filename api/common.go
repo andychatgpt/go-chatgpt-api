@@ -88,6 +88,7 @@ type AuthLogin interface {
 }
 
 func init() {
+	ProxyUrl = os.Getenv("PROXY")
 	Client, _ = tls_client.NewHttpClient(tls_client.NewNoopLogger(), []tls_client.HttpClientOption{
 		tls_client.WithCookieJar(tls_client.NewCookieJar()),
 		tls_client.WithTimeoutSeconds(defaultTimeoutSeconds),
