@@ -19,4 +19,5 @@
 - 在请求接口的时候，如果遇到状态码是403,基本上都是CloudFlare的盾给拦截住了
 - 用浏览器打开的时候，CloudFlare盾一般是自动跳转5s盾或者有一个CheckBox的"Verify you are human"的点击盾。如果这个盾点击过不去一直循环，或者是更复杂的验证码形式，可以考虑换个IP了
 - 5S盾破盾后，程序中再次请求时需要携带破盾的Cookies信息（cf_xxxx）
+- 有部分返回403的IP可以简单的通过添加sec-ch-ua-arch和sec-ch-ua-bitness字段来去掉cf验证
 
