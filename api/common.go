@@ -42,13 +42,6 @@ const (
 	GetAccessTokenErrorMessage         = "failed to get access token"
 	defaultTimeoutSeconds              = 600 // 10 minutes
 
-	SecChUa         = `"Google Chrome";v="123", "Not:A-Brand";v="8", "Chromium";v="123"`
-	SecChUaMobile   = "?0"
-	SecChUaPlatform = `"macOS"`
-	SecFetchDest    = "document"
-	SecFetchMode    = "navigate"
-	SecFetchUser    = "?1"
-
 	EmailKey                       = "email"
 	AccountDeactivatedErrorMessage = "account %s is deactivated"
 
