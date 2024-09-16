@@ -1,4 +1,5 @@
 .env
 go-chatgpt-api
 __debug*
-chat.openai.com.har
+harPool
+.DS_Store

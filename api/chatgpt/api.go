@@ -11,7 +11,7 @@ import (
 	http "github.com/bogdanfinn/fhttp"
 	"github.com/gin-gonic/gin"
 
-	"github.com/linweiyuan/go-chatgpt-api/api"
+	"github.com/andychatgpt/go-chatgpt-api/api"
 	"github.com/linweiyuan/go-logger/logger"
 )
 
@@ -40,7 +40,8 @@ func CreateConversation(c *gin.Context) {
 	}
 
 	if strings.HasPrefix(request.Model, gpt4Model) && request.ArkoseToken == "" {
-		arkoseToken, err := api.GetArkoseToken()
+		accessToken := api.GetAccessToken(c)
+		arkoseToken, err := api.GetChatArkoseToken(accessToken)
 		if err != nil || arkoseToken == "" {
 			c.AbortWithStatusJSON(http.StatusForbidden, api.ReturnMessage(err.Error()))
 			return

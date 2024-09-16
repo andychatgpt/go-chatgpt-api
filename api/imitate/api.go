@@ -15,8 +15,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 
-	"github.com/linweiyuan/go-chatgpt-api/api"
-	"github.com/linweiyuan/go-chatgpt-api/api/chatgpt"
+	"github.com/andychatgpt/go-chatgpt-api/api"
+	"github.com/andychatgpt/go-chatgpt-api/api/chatgpt"
 	"github.com/linweiyuan/go-logger/logger"
 )
 
@@ -52,7 +52,8 @@ func CreateChatCompletions(c *gin.Context) {
 	}
 
 	// 将聊天请求转换为ChatGPT请求。
-	translatedRequest, model := convertAPIRequest(originalRequest)
+	accessToken := api.GetAccessToken(c)
+	translatedRequest, model := convertAPIRequest(originalRequest, accessToken)
 
 	response, done := sendConversationRequest(c, translatedRequest, token)
 	if done {
@@ -126,7 +127,7 @@ func generateId() string {
 	return "chatcmpl-" + id
 }
 
-func convertAPIRequest(apiRequest APIRequest) (chatgpt.CreateConversationRequest, string) {
+func convertAPIRequest(apiRequest APIRequest, accessToken string) (chatgpt.CreateConversationRequest, string) {
 	chatgptRequest := NewChatGPTRequest()
 
 	var model = "gpt-3.5-turbo-0613"
@@ -136,7 +137,7 @@ func convertAPIRequest(apiRequest APIRequest) (chatgpt.CreateConversationRequest
 	}
 
 	if strings.HasPrefix(apiRequest.Model, "gpt-4") {
-		arkoseToken, err := api.GetArkoseToken()
+		arkoseToken, err := api.GetChatArkoseToken(accessToken)
 		if err == nil {
 			chatgptRequest.ArkoseToken = arkoseToken
 		} else {
